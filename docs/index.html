@@ -41,6 +41,7 @@
             <li><a href="#feature-engineering" class="nav-link">特征工程</a></li>
             <li><a href="#iv-selection" class="nav-link">IV 与特征筛选</a></li>
             <li><a href="#model-training" class="nav-link">模型训练</a></li>
+            <li><a href="#shap" class="nav-link">模型可解释性</a></li>
             <li><a href="#stability" class="nav-link">稳定性分析</a></li>
             <li><a href="#insights" class="nav-link">业务洞察</a></li>
             <li><a href="#appendix" class="nav-link">附录</a></li>
@@ -699,6 +700,107 @@
                             <li>作为基线模型验证特征有效性</li>
                         </ul>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 模型可解释性 -->
+        <section id="shap" class="section section-alt">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-num">08.5</span>
+                    <h2>模型可解释性分析</h2>
+                    <p class="section-subtitle">SHAP Explainability</p>
+                </div>
+
+                <div class="card highlight-card">
+                    <p>使用 <strong>SHAP (SHapley Additive exPlanations)</strong> 对 XGBoost 模型进行全局与局部可解释性分析，基于 2,000 条测试样本（含 200 条违约样本）。SHAP 值量化了每个特征对模型预测的贡献，红色表示增加违约风险，蓝色表示降低违约风险。</p>
+                </div>
+
+                <!-- 全局特征重要性 -->
+                <h3 class="subsection-title">全局特征重要性</h3>
+                <p>下图展示了所有特征对模型预测的平均影响程度。左侧为 SHAP Beeswarm 图（每个点代表一个样本），右侧为平均绝对 SHAP 值的条形图。</p>
+                <div class="image-grid two-col">
+                    <div class="image-card">
+                        <img src="images/02_shap_summary.png" alt="SHAP Summary Plot" loading="lazy">
+                        <div class="image-caption">
+                            <strong>SHAP Beeswarm 图</strong> — 每个点代表一个样本，颜色表示特征值高低（红高蓝低），横轴为 SHAP 值（右=增加违约风险）
+                        </div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/02_shap_bar.png" alt="SHAP Bar Plot" loading="lazy">
+                        <div class="image-caption">
+                            <strong>平均特征重要性</strong> — 按平均 |SHAP 值| 排序，"征信局A逾期占比"和"账户关闭24个月内平均逾期天数"是最重要的风险信号
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>关键发现</h4>
+                    <ul>
+                        <li><strong>征信局A逾期占比</strong>（A类征信局逾期账户比例）是最重要的风险指标，高值样本普遍具有更高的违约概率</li>
+                        <li><strong>账户关闭24个月内平均逾期天数</strong> 反映了近期信用行为的恶化程度，逾期天数越长风险越高</li>
+                        <li><strong>近9个月拒贷次数</strong> 和 <strong>信贷价格</strong>（贷款金额）也是重要的正向风险驱动因素</li>
+                        <li>低信贷价格、无逾期记录、提前还款占比高的客户则显著降低违约风险（负向 SHAP 值）</li>
+                    </ul>
+                </div>
+
+                <!-- 关键特征依赖关系 -->
+                <h3 class="subsection-title mt-3">关键特征依赖关系</h3>
+                <p>Dependence Plot 展示了 TOP3 最重要特征的取值与 SHAP 贡献值之间的非线性关系，帮助理解模型如何基于这些特征做出决策。</p>
+                <div class="image-card full-width-image">
+                    <img src="images/02_shap_dependence_top3.png" alt="SHAP Dependence Plot" loading="lazy">
+                    <div class="image-caption">
+                        <strong>TOP3 特征 SHAP 依赖关系</strong> — 横轴为特征值，纵轴为该特征对违约概率的贡献。颜色由 SHAP 值着色（红=增加风险）。可观察到明显的阈值效应：当逾期占比 > 0.02 时，风险贡献陡增
+                    </div>
+                </div>
+
+                <!-- 个体样本解释 -->
+                <h3 class="subsection-title mt-3">个体样本解释（典型案例）</h3>
+                <p>以下选取了三个具有代表性的样本，通过 SHAP Waterfall 图展示模型是如何从基础概率逐步推演到最终预测结果的。每个条形代表一个特征的贡献，红色向上（增加风险），蓝色向下（降低风险）。</p>
+
+                <div class="image-grid three-col">
+                    <div class="image-card">
+                        <img src="images/02_shap_waterfall_高风险坏客户_实际违约.png" alt="高风险坏客户" loading="lazy">
+                        <div class="image-caption">
+                            <strong>案例 A：高风险坏客户</strong><br>
+                            预测概率 <span style="color:#e53e3e">70.3%</span> | 实际：违约<br>
+                            <small>征信局A逾期占比(3.5%)和逾期>30天占比(3.5%)是主要风险驱动，信贷价格(252K)进一步推高违约概率</small>
+                        </div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/02_shap_waterfall_低风险好客户_实际正常.png" alt="低风险好客户" loading="lazy">
+                        <div class="image-caption">
+                            <strong>案例 B：低风险好客户</strong><br>
+                            预测概率 <span style="color:#38a169">0.04%</span> | 实际：正常<br>
+                            <small>信贷价格仅43K、征信局A无逾期、提前还款占比100%，多重保护因素将风险压至极低</small>
+                        </div>
+                    </div>
+                    <div class="image-card">
+                        <img src="images/02_shap_waterfall_被误判为高风险的好客户.png" alt="被误判样本" loading="lazy">
+                        <div class="image-caption">
+                            <strong>案例 C：误判样本</strong><br>
+                            预测概率 <span style="color:#f6ad55">42.9%</span> | 实际：正常<br>
+                            <small>账户关闭24个月内平均逾期13天、共享手机号客户数5人，导致模型过度警觉；但客户实际未违约，提示模型在该场景下可能偏保守</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="image-card full-width-image mt-2">
+                    <img src="images/02_shap_sample_comparison.png" alt="样本对比" loading="lazy">
+                    <div class="image-caption">
+                        <strong>三个样本的 SHAP 贡献对比</strong> — 横向对比三个样本的 TOP8 特征贡献。案例A和B特征影响方向完全相反；案例C虽然实际正常，但逾期历史导致模型给出中等风险评分
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h4>业务启示</h4>
+                    <ul>
+                        <li><strong>逾期历史是核心风险信号</strong>：征信局A的逾期相关特征在所有样本中都具有最高的 SHAP 贡献，建议贷前审批必须严格审查征信逾期记录</li>
+                        <li><strong>贷款金额与风险正相关</strong>：信贷价格（贷款金额）对高风险客户是风险放大器，对低风险客户则是保护因素（小额贷款客户倾向更谨慎），呈现非线性交互效应</li>
+                        <li><strong>模型存在误判空间</strong>：案例C显示，仅凭历史逾期记录可能将信用正在恢复的客户误判为高风险。建议在自动拒绝阈值附近引入人工复核机制，结合近期还款行为综合判断</li>
+                        <li><strong>可解释性支持监管合规</strong>：SHAP 分析为每个预测提供了透明的归因路径，满足金融监管机构对 AI 模型"可解释性"的要求</li>
+                    </ul>
                 </div>
             </div>
         </section>
