@@ -401,29 +401,28 @@
                     <p class="section-subtitle">Exploratory Data Analysis</p>
                 </div>
 
-                <div class="content-grid two-col">
-                    <div class="card">
-                        <h3>样本概况</h3>
-                        <p>训练集共 <strong>1,526,659</strong> 条样本，static 表含 <strong>168</strong> 个字段。目标变量极度不平衡，违约率仅 <strong>3.14%</strong>，属于典型的信贷风险建模场景。</p>
-                        <div class="mini-stats">
-                            <div class="mini-stat">
-                                <span class="mini-value">1,526,659</span>
-                                <span class="mini-label">训练集样本量</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="mini-value">96.86%</span>
-                                <span class="mini-label">正常样本</span>
-                            </div>
-                            <div class="mini-stat">
-                                <span class="mini-value">3.14%</span>
-                                <span class="mini-label">违约样本</span>
-                            </div>
+                <div class="card">
+                    <h3>样本概况</h3>
+                    <p>训练集共 <strong>1,526,659</strong> 条样本，static 表含 <strong>168</strong> 个字段。目标变量极度不平衡，违约率仅 <strong>3.14%</strong>，属于典型的信贷风险建模场景。</p>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <span class="mini-value">1,526,659</span>
+                            <span class="mini-label">训练集样本量</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-value">96.86%</span>
+                            <span class="mini-label">正常样本</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-value">3.14%</span>
+                            <span class="mini-label">违约样本</span>
                         </div>
                     </div>
-                    <div class="image-card">
-                        <img src="images/01_target_distribution.png" alt="目标变量分布" loading="lazy">
-                        <p class="caption">目标变量分布（极度不平衡）</p>
-                    </div>
+                </div>
+
+                <div class="image-card mt-2 full-width-image">
+                    <img src="images/01_target_distribution.png" alt="目标变量分布" loading="lazy">
+                    <p class="caption">目标变量分布（极度不平衡）</p>
                 </div>
 
                 <div class="card mt-2">
@@ -433,39 +432,6 @@
                 <div class="image-card mt-1">
                     <img src="images/01_time_analysis.png" alt="时间结构分析" loading="lazy">
                     <p class="caption">WEEK_NUM 时间结构与违约率波动</p>
-                </div>
-
-                <div class="content-grid two-col mt-2">
-                    <div class="image-card">
-                        <img src="images/01_bivariate_analysis_cn.png" alt="双变量分析" loading="lazy">
-                        <p class="caption">数值型变量双变量分析</p>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/01_categorical_analysis_cn.png" alt="类别型分析" loading="lazy">
-                        <p class="caption">类别型变量违约率分析</p>
-                    </div>
-                </div>
-
-                <div class="content-grid two-col mt-2">
-                    <div class="image-card">
-                        <img src="images/01_correlation_matrix_cn.png" alt="相关性矩阵" loading="lazy">
-                        <p class="caption">相关性矩阵（中文标注）</p>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/01_missing_values_all.png" alt="缺失值分布" loading="lazy">
-                        <p class="caption">缺失值分布概览</p>
-                    </div>
-                </div>
-
-                <div class="content-grid two-col mt-2">
-                    <div class="image-card">
-                        <img src="images/01_module_DPD与逾期行为_distribution.png" alt="DPD分布" loading="lazy">
-                        <p class="caption">DPD与逾期行为分布</p>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/01_module_金额与债务_distribution.png" alt="金额债务分布" loading="lazy">
-                        <p class="caption">金额与债务分布</p>
-                    </div>
                 </div>
             </div>
         </section>

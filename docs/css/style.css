@@ -477,6 +477,12 @@ body {
     display: block;
 }
 
+.full-width-image img {
+    max-height: 500px;
+    object-fit: contain;
+    object-position: center;
+}
+
 .caption {
     text-align: center;
     font-size: 0.8rem;
