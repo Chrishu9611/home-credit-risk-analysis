@@ -477,6 +477,28 @@ body {
     display: block;
 }
 
+/* 图片网格布局 */
+.image-grid {
+    display: grid;
+    gap: 24px;
+    margin-top: 16px;
+}
+
+.image-grid.two-col {
+    grid-template-columns: repeat(2, 1fr);
+}
+
+.image-grid.three-col {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+@media (max-width: 768px) {
+    .image-grid.two-col,
+    .image-grid.three-col {
+        grid-template-columns: 1fr;
+    }
+}
+
 .full-width-image img {
     max-height: 500px;
     object-fit: contain;

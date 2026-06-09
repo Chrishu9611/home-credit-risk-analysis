@@ -90,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
         // 创建 Lightbox DOM
         var overlay = document.createElement('div');
         overlay.className = 'lightbox-overlay';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
         overlay.innerHTML =
             '<div class="lightbox-content">' +
                 '<button class="lightbox-close" aria-label="关闭">&times;</button>' +
@@ -104,6 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         var closeBtn = overlay.querySelector('.lightbox-close');
 
         function openLightbox(img) {
+            if (!img || !img.src) return;
             lightboxImg.src = img.src;
             lightboxImg.alt = img.alt || '';
 
@@ -111,8 +114,14 @@ document.addEventListener('DOMContentLoaded', function() {
             var card = img.closest('.image-card');
             if (card) {
                 var captionEl = card.querySelector('.image-caption');
-                lightboxCaption.textContent = captionEl ? captionEl.textContent.trim() : '';
-                lightboxCaption.style.display = captionEl ? 'block' : 'none';
+                if (captionEl) {
+                    lightboxCaption.textContent = captionEl.textContent.trim();
+                    lightboxCaption.style.display = 'block';
+                } else {
+                    lightboxCaption.style.display = 'none';
+                }
+            } else {
+                lightboxCaption.style.display = 'none';
             }
 
             overlay.classList.add('active');
@@ -122,19 +131,18 @@ document.addEventListener('DOMContentLoaded', function() {
         function closeLightbox() {
             overlay.classList.remove('active');
             document.body.classList.remove('lightbox-open');
-            // 延迟清空图片，避免关闭动画时闪烁
             setTimeout(function() {
                 lightboxImg.src = '';
+                lightboxImg.alt = '';
             }, 300);
         }
 
-        // 绑定所有图片卡片
-        var images = document.querySelectorAll('.image-card img');
-        images.forEach(function(img) {
-            img.addEventListener('click', function(e) {
-                e.preventDefault();
+        // 绑定所有图片卡片 — 使用事件委托更可靠
+        document.addEventListener('click', function(e) {
+            var img = e.target.closest('.image-card img');
+            if (img) {
                 openLightbox(img);
-            });
+            }
         });
 
         // 关闭事件
