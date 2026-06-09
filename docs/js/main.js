@@ -84,33 +84,77 @@ document.addEventListener('DOMContentLoaded', function() {
     updateActiveNav();
 
     // ==========================================
-    // 图片懒加载优化（点击放大）
+    // 图片 Lightbox 放大查看器
     // ==========================================
-    const images = document.querySelectorAll('.image-card img');
+    (function() {
+        // 创建 Lightbox DOM
+        var overlay = document.createElement('div');
+        overlay.className = 'lightbox-overlay';
+        overlay.innerHTML =
+            '<div class="lightbox-content">' +
+                '<button class="lightbox-close" aria-label="关闭">&times;</button>' +
+                '<img class="lightbox-img" src="" alt="">' +
+                '<div class="lightbox-caption"></div>' +
+            '</div>' +
+            '<div class="lightbox-hint">按 ESC 或点击任意处关闭</div>';
+        document.body.appendChild(overlay);
 
-    images.forEach(function(img) {
-        img.addEventListener('click', function() {
-            // 简单的点击放大效果
-            if (img.classList.contains('zoomed')) {
-                img.classList.remove('zoomed');
-                img.style.transform = '';
-                img.style.cursor = 'zoom-in';
-            } else {
-                // 移除其他图片的放大状态
-                images.forEach(function(other) {
-                    other.classList.remove('zoomed');
-                    other.style.transform = '';
-                    other.style.cursor = 'zoom-in';
-                });
+        var lightboxImg = overlay.querySelector('.lightbox-img');
+        var lightboxCaption = overlay.querySelector('.lightbox-caption');
+        var closeBtn = overlay.querySelector('.lightbox-close');
 
-                img.classList.add('zoomed');
-                img.style.cursor = 'zoom-out';
+        function openLightbox(img) {
+            lightboxImg.src = img.src;
+            lightboxImg.alt = img.alt || '';
+
+            // 尝试从相邻的 caption 获取标题
+            var card = img.closest('.image-card');
+            if (card) {
+                var captionEl = card.querySelector('.image-caption');
+                lightboxCaption.textContent = captionEl ? captionEl.textContent.trim() : '';
+                lightboxCaption.style.display = captionEl ? 'block' : 'none';
+            }
+
+            overlay.classList.add('active');
+            document.body.classList.add('lightbox-open');
+        }
+
+        function closeLightbox() {
+            overlay.classList.remove('active');
+            document.body.classList.remove('lightbox-open');
+            // 延迟清空图片，避免关闭动画时闪烁
+            setTimeout(function() {
+                lightboxImg.src = '';
+            }, 300);
+        }
+
+        // 绑定所有图片卡片
+        var images = document.querySelectorAll('.image-card img');
+        images.forEach(function(img) {
+            img.addEventListener('click', function(e) {
+                e.preventDefault();
+                openLightbox(img);
+            });
+        });
+
+        // 关闭事件
+        closeBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeLightbox();
+        });
+
+        overlay.addEventListener('click', function(e) {
+            if (e.target === overlay) {
+                closeLightbox();
             }
         });
 
-        img.style.cursor = 'zoom-in';
-        img.style.transition = 'transform 0.3s ease';
-    });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && overlay.classList.contains('active')) {
+                closeLightbox();
+            }
+        });
+    })();
 
     // ==========================================
     // 窗口大小改变处理
