@@ -96,6 +96,8 @@ print(f'[INFO] 采样后大小: {len(X_sample)} (违约: {y_sample.sum()}, 正�
 # 获取特征中文名映射
 imp_df = pd.read_csv(DATA_DIR / 'model_outputs_v2/xgboost_importance_all_with_cn.csv')
 cn_map = dict(zip(imp_df['feature'], imp_df['feature_cn']))
+# 修正未完全翻译的字段（源CSV中该字段的"中文名"只是原名+后缀）
+cn_map['lastrejectreason_759M_te'] = '上次被拒原因_目标编码'
 # 保留英文列名用于SHAP计算（XGBoost兼容性问题）
 X_sample_en = X_sample.copy()
 X_sample_cn = X_sample.copy()

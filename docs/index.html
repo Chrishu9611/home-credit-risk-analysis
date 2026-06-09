@@ -745,16 +745,6 @@
                     </ul>
                 </div>
 
-                <!-- 关键特征依赖关系 -->
-                <h3 class="subsection-title mt-3">关键特征依赖关系</h3>
-                <p>Dependence Plot 展示了 TOP3 最重要特征的取值与 SHAP 贡献值之间的非线性关系，帮助理解模型如何基于这些特征做出决策。</p>
-                <div class="image-card full-width-image">
-                    <img src="images/02_shap_dependence_top3.png" alt="SHAP Dependence Plot" loading="lazy">
-                    <div class="image-caption">
-                        <strong>TOP3 特征 SHAP 依赖关系</strong> — 横轴为特征值，纵轴为该特征对违约概率的贡献。颜色由 SHAP 值着色（红=增加风险）。可观察到明显的阈值效应：当逾期占比 > 0.02 时，风险贡献陡增
-                    </div>
-                </div>
-
                 <!-- 个体样本解释 -->
                 <h3 class="subsection-title mt-3">个体样本解释（典型案例）</h3>
                 <p>以下选取了三个具有代表性的样本，通过 SHAP Waterfall 图展示模型是如何从基础概率逐步推演到最终预测结果的。每个条形代表一个特征的贡献，红色向上（增加风险），蓝色向下（降低风险）。</p>
@@ -783,13 +773,6 @@
                             预测概率 <span style="color:#f6ad55">42.9%</span> | 实际：正常<br>
                             <small>账户关闭24个月内平均逾期13天、共享手机号客户数5人，导致模型过度警觉；但客户实际未违约，提示模型在该场景下可能偏保守</small>
                         </div>
-                    </div>
-                </div>
-
-                <div class="image-card full-width-image mt-2">
-                    <img src="images/02_shap_sample_comparison.png" alt="样本对比" loading="lazy">
-                    <div class="image-caption">
-                        <strong>三个样本的 SHAP 贡献对比</strong> — 横向对比三个样本的 TOP8 特征贡献。案例A和B特征影响方向完全相反；案例C虽然实际正常，但逾期历史导致模型给出中等风险评分
                     </div>
                 </div>
 
