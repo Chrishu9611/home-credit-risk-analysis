@@ -83,9 +83,9 @@ def fig_target_distribution():
 
     fig, ax = plt.subplots(1, 2, figsize=(12, 4.5))
 
-    # 左图：柱状图
+    # 左图：柱状图（深蓝+橙色）
     bars = ax[0].bar(['正常 (0)', '违约 (1)'], target_counts.values,
-                     color=[COLORS['positive'], COLORS['negative']],
+                     color=[COLORS['primary'], COLORS['accent']],
                      width=0.5, edgecolor='white', linewidth=2)
     ax[0].set_title('目标变量分布（绝对数）', fontsize=13, fontweight='bold', color=COLORS['primary'])
     ax[0].set_ylabel('样本数', fontsize=11)
@@ -98,23 +98,23 @@ def fig_target_distribution():
                    f'{val:,}', ha='center', va='bottom', fontsize=11, fontweight='bold',
                    color=COLORS['text'])
 
-    # 右图：饼图（环形图）
+    # 右图：饼图（环形图，深蓝+橙色）
     wedges, texts, autotexts = ax[1].pie(
         target_counts.values,
         labels=[f'正常\n{target_counts[0]:,} ({target_ratio[0]*100:.2f}%)',
                 f'违约\n{target_counts[1]:,} ({target_ratio[1]*100:.2f}%)'],
         autopct='',
         startangle=90,
-        colors=[COLORS['positive'], COLORS['negative']],
+        colors=[COLORS['primary'], COLORS['accent']],
         wedgeprops=dict(width=0.5, edgecolor='white', linewidth=3),
         textprops=dict(fontsize=11, color=COLORS['text']),
     )
     ax[1].set_title('目标变量占比', fontsize=13, fontweight='bold', color=COLORS['primary'])
 
-    # 中心文字
+    # 中心文字（橙色）
     ax[1].text(0, 0, f'违约率\n{target_ratio[1]*100:.2f}%',
                ha='center', va='center', fontsize=14, fontweight='bold',
-               color=COLORS['negative'])
+               color=COLORS['accent'])
 
     plt.suptitle('目标变量分布分析', fontsize=15, fontweight='bold', color=COLORS['primary'],
                  y=1.02)
@@ -146,12 +146,12 @@ def fig_time_analysis():
     ax[0].yaxis.grid(True, linestyle='--', alpha=0.4)
     ax[0].set_axisbelow(True)
 
-    # 右图：WEEK_NUM 违约率趋势
+    # 右图：WEEK_NUM 违约率趋势（橙色）
     week_default = base.groupby('WEEK_NUM')['target'].agg(['mean', 'count']).reset_index()
     ax[1].fill_between(week_default['WEEK_NUM'], week_default['mean'] * 100,
-                       alpha=0.12, color=COLORS['negative'])
+                       alpha=0.12, color=COLORS['accent'])
     ax[1].plot(week_default['WEEK_NUM'], week_default['mean'] * 100,
-               color=COLORS['negative'], marker='o', markersize=3.5,
+               color=COLORS['accent'], marker='o', markersize=3.5,
                linewidth=1.8, label='周违约率')
     ax[1].axhline(y=base['target'].mean() * 100, color=COLORS['neutral'],
                   linestyle='--', linewidth=1.5, alpha=0.8,
