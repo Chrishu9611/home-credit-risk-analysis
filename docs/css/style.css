@@ -572,9 +572,11 @@ body {
     grid-template-columns: repeat(2, 1fr);
 }
 
+.mt-05 { margin-top: 8px; }
 .mt-1 { margin-top: 16px; }
 .mt-2 { margin-top: 24px; }
 .mb-1 { margin-bottom: 16px; }
+.text-light { color: var(--text-light); }
 
 /* ============================================
    表格
@@ -631,6 +633,37 @@ body {
 .highlight-cell {
     color: var(--success);
     font-weight: 700;
+}
+
+/* Expand/collapse button for cross-combination table */
+.expand-btn {
+    display: inline-block;
+    padding: 6px 18px;
+    margin: 4px 0;
+    background: var(--bg);
+    color: var(--primary);
+    border: 1.5px solid var(--primary);
+    border-radius: 20px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-family: inherit;
+}
+.expand-btn:hover {
+    background: var(--primary);
+    color: #fff;
+}
+.expand-toggle-row td {
+    text-align: center;
+    padding: 10px 16px;
+    border-bottom: none;
+}
+.weakest-row {
+    background: rgba(229, 62, 62, 0.04);
+}
+.weakest-row td {
+    color: var(--text-light);
 }
 
 /* ============================================
@@ -805,6 +838,17 @@ body {
     margin-bottom: 8px;
 }
 
+.badge {
+    display: inline-block;
+    padding: 2px 10px;
+    background: var(--primary);
+    color: #fff;
+    border-radius: 100px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    vertical-align: middle;
+    margin-left: 4px;
+}
 .feature-count {
     display: inline-block;
     padding: 4px 12px;

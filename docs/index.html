@@ -7,6 +7,10 @@
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 非白户 / 白户 图标标识 */
+        .ico-nw, .ico-wh { display: inline-block; width: 16px; height: 16px; margin-right: 5px; vertical-align: -2px; }
+    </style>
 </head>
 <body>
     <!-- 移动端菜单按钮 -->
@@ -33,18 +37,16 @@
         </div>
         <ul class="nav-list">
             <li><a href="#hero" class="nav-link active">项目概览</a></li>
-            <li><a href="#overview" class="nav-link">项目概述</a></li>
-            <li><a href="#model-results" class="nav-link">模型结果</a></li>
-            <li><a href="#scorecard" class="nav-link">评分卡策略</a></li>
-            <li><a href="#eda" class="nav-link">探索性数据分析</a></li>
-            <li><a href="#missing-values" class="nav-link">缺失值处理</a></li>
-            <li><a href="#feature-engineering" class="nav-link">特征工程</a></li>
-            <li><a href="#iv-selection" class="nav-link">IV 与特征筛选</a></li>
-            <li><a href="#model-training" class="nav-link">模型训练</a></li>
-            <li><a href="#shap" class="nav-link">模型可解释性</a></li>
-            <li><a href="#stability" class="nav-link">稳定性分析</a></li>
-            <li><a href="#insights" class="nav-link">业务洞察</a></li>
-            <li><a href="#appendix" class="nav-link">附录</a></li>
+            <li><a href="#overview" class="nav-link">01 项目概述</a></li>
+            <li><a href="#model-results" class="nav-link">02 核心结论</a></li>
+            <li><a href="#eda" class="nav-link">03 探索性数据分析</a></li>
+            <li><a href="#missing-values" class="nav-link">04 缺失值处理</a></li>
+            <li><a href="#feature-engineering" class="nav-link">05 特征工程</a></li>
+            <li><a href="#iv-selection" class="nav-link">06 特征筛选</a></li>
+            <li><a href="#model-training" class="nav-link">07 模型训练</a></li>
+            <li><a href="#stability" class="nav-link">08 稳定性分析</a></li>
+            <li><a href="#insights" class="nav-link">09 业务洞察</a></li>
+            <li><a href="#appendix" class="nav-link">10 附录</a></li>
         </ul>
         <div class="sidebar-footer">
             <a href="https://github.com/Chrishu9611/home-credit-risk-analysis" target="_blank" class="github-link">
@@ -65,7 +67,6 @@
             <div class="hero-content">
                 <div class="hero-badge">Kaggle 2024 CRMS 竞赛数据集</div>
                 <h1>Home Credit<br>信用风险分析项目</h1>
-                <p class="hero-desc">by Chris_Hu</p>
                 <div class="hero-stats">
                     <div class="stat-card">
                         <div class="stat-value">152.7万</div>
@@ -76,22 +77,25 @@
                         <div class="stat-label">衍生特征</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value highlight">0.8434</div>
-                        <div class="stat-label">XGBoost Test AUC</div>
+                        <div class="stat-value highlight">0.8504</div>
+                        <div class="stat-label">双模型 Full AUC</div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-value">0.6491</div>
-                        <div class="stat-label">官方评分</div>
+                        <div class="stat-value highlight">0.6707</div>
+                        <div class="stat-label">4-Week 官方评分</div>
                     </div>
                 </div>
                 <div class="hero-tags">
                     <span class="tag">EDA</span>
                     <span class="tag">特征工程</span>
                     <span class="tag">IV筛选</span>
-                    <span class="tag">LightGBM</span>
+                    <span class="tag">双模型架构</span>
                     <span class="tag">XGBoost</span>
+                    <span class="tag">LightGBM</span>
+                    <span class="tag">LogisticRegression</span>
                     <span class="tag">PSI稳定性</span>
                     <span class="tag">评分卡</span>
+                    <span class="tag">白户策略</span>
                 </div>
             </div>
             <div class="scroll-hint">
@@ -162,234 +166,207 @@
             <div class="container">
                 <div class="section-header">
                     <span class="section-num">02</span>
-                    <h2>模型结果</h2>
-                    <p class="section-subtitle">Model Results</p>
+                    <h2>核心结论</h2>
+                    <p class="section-subtitle">Key Conclusions</p>
                 </div>
 
                 <div class="card highlight-card">
-                    <h3>核心结论</h3>
-                    <p>基于时间序列切分（前70%训练、中15%验证、后15%测试），对比训练 LightGBM、XGBoost、Decision Tree 三模型。<strong>XGBoost</strong> 在测试集上综合表现最优，被选定为最终应用模型。</p>
+                    <h3>项目核心结论</h3>
+                    <div class="feature-list">
+                        <div class="feature-item"><div class="feature-rank">1</div><div class="feature-info"><h4>双模型分群架构性能较优</h4><p>本项目采用 XGBoost 对征信白户和非白户分别建模，最终双模型架构全量测试集 AUC 达 <strong>0.85</strong>，官方评分 <strong>0.67</strong>（Mean Gini − Std Gini），在 16 种交叉组合中排名第 1。</p></div></div>
+                        <div class="feature-item"><div class="feature-rank">2</div><div class="feature-info"><h4>两类人群风险驱动因子本质不同</h4><p>非白户模型主要依赖<strong>征信局历史逾期 + 拒贷/申请行为</strong>，白户模型主要依赖<strong>物理属性 + 税务记录</strong>。两模型 TOP30 仅 2 个共同特征，验证了分群建模的必要性。</p></div></div>
+                        <div class="feature-item"><div class="feature-rank">3</div><div class="feature-info"><h4>建议策略可实现有效风险分层</h4><p>使用"平衡进取"阈值策略（非白户 ≥755 / 白户 ≥801），可实现全量通过率约 <strong>88.5%</strong>，非白户风险降幅 <strong>46.7%</strong>，白户风险降幅 <strong>68.3%</strong>。</p></div></div>
+                    </div>
                 </div>
 
-                <div class="table-wrapper mt-2">
-                    <table class="data-table model-table">
-                        <thead>
-                            <tr>
-                                <th>模型</th>
-                                <th>Test AUC</th>
-                                <th>Test KS</th>
-                                <th>Test Gini</th>
-                                <th>Recall</th>
-                                <th>官方得分</th>
-                                <th>综合评价</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr class="best-row">
-                                <td><strong>XGBoost ⭐</strong></td>
-                                <td class="highlight-cell">0.8434</td>
-                                <td>0.5283</td>
-                                <td>0.6868</td>
-                                <td>—</td>
-                                <td class="highlight-cell">0.6491</td>
-                                <td>AUC最高、稳定性最好</td>
-                            </tr>
-                            <tr>
-                                <td>LightGBM</td>
-                                <td>0.8426</td>
-                                <td>0.5253</td>
-                                <td>0.6852</td>
-                                <td>—</td>
-                                <td>0.6451</td>
-                                <td>速度快，性能接近XGB</td>
-                            </tr>
-                            <tr>
-                                <td>DecisionTree</td>
-                                <td>0.7745</td>
-                                <td>0.4268</td>
-                                <td>0.5490</td>
-                                <td>—</td>
-                                <td>0.4315</td>
-                                <td>基线模型，可解释性强</td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div class="card highlight-card mt-2">
+                    <h3>模型方案：双 XGBoost 分群建模架构</h3>
+                    <p>基于数据探索发现的全量客户中 <strong>5.06% 为征信白户</strong>（无任何历史信用记录），单一模型无法同时服务好两类人群（两模型 TOP30 仅 2 个共同特征）。最终采用<strong>分群建模 + 分群评分</strong>策略：非白户与白户各自训练独立 XGBoost 模型，部署时根据客户类型路由到对应模型。</p>
                 </div>
 
                 <div class="content-grid two-col mt-2">
                     <div class="card">
-                        <h3>XGBoost 变量重要性 TOP10</h3>
-                        <p class="mb-1">XGBoost 模型变量重要性（Gain）排序显示，最强信号集中在四类特征：</p>
-                        <ul class="feature-categories">
-                            <li><span class="cat-badge cat-1">①</span> 历史还款行为（DPD）— 最强违约预测因子</li>
-                            <li><span class="cat-badge cat-2">②</span> 外部征信数据 — 跨机构核心信息源</li>
-                            <li><span class="cat-badge cat-3">③</span> 拒贷与反欺诈行为 — 其他机构识别的风险</li>
-                            <li><span class="cat-badge cat-4">④</span> 债务结构与申请行为 — 偿债压力与资金需求</li>
+                        <h3><svg class="ico-nw" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户 XGBoost 子模型</h3>
+                        <div class="mini-stats">
+                            <div class="mini-stat">
+                                <span class="mini-value highlight">0.8522</span>
+                                <span class="mini-label">Test AUC</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-value">0.6971</span>
+                                <span class="mini-label">Mean Gini</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-value">155</span>
+                                <span class="mini-label">入模特征数</span>
+                            </div>
+                        </div>
+                        <ul class="check-list mt-1">
+                            <li>训练集 ~116.6 万样本</li>
+                            <li>超参：max_depth=4, lr=0.05, subsample=0.7, reg_alpha=0.1</li>
+                            <li>特征筛选：IV>0.02 + PSI≤0.25双筛选后保留 155 个特征</li>
+                            <li><strong>核心驱动特征：征信局历史逾期 + 拒贷/申请行为</strong></li>
                         </ul>
                     </div>
-                    <div class="image-card">
-                        <img src="images/01_xgboost_importance_top10_cn.png" alt="XGBoost TOP10特征重要性" loading="lazy">
-                        <p class="caption">XGBoost 变量重要性 TOP10（中文）</p>
+                    <div class="card">
+                        <h3><svg class="ico-wh" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户 XGBoost 子模型</h3>
+                        <div class="mini-stats">
+                            <div class="mini-stat">
+                                <span class="mini-value highlight">0.7919</span>
+                                <span class="mini-label">Test AUC</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-value">0.5837</span>
+                                <span class="mini-label">Mean Gini</span>
+                            </div>
+                            <div class="mini-stat">
+                                <span class="mini-value">14</span>
+                                <span class="mini-label">入模特征数</span>
+                            </div>
+                        </div>
+                        <ul class="check-list mt-1">
+                            <li>训练集仅 ~6.9 万样本（坏样本 ~1,800），强正则化防过拟合</li>
+                            <li>超参：max_depth=2, subsample=0.6, reg_lambda=5.0, min_child_weight=10</li>
+                            <li>特征筛选：IV>0.05筛选后保留14个特征</li>
+                            <li><strong>核心驱动：物理属性 + 税务记录</strong></li>
+                        </ul>
                     </div>
                 </div>
 
                 <div class="card mt-2">
-                    <h3>TOP10 特征业务含义详解</h3>
-                    <div class="feature-list">
-                        <div class="feature-item">
-                            <div class="feature-rank">1</div>
-                            <div class="feature-info">
-                                <h4>账户关闭24个月内平均逾期天数</h4>
-                                <p>统计客户在过去两年内每次逾期平均拖欠了多少天才还清。直接刻画客户的还款习惯，平均逾期天数越长，说明还款意愿越差或现金流管理越混乱。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">2</div>
-                            <div class="feature-info">
-                                <h4>征信局A逾期>30天占比</h4>
-                                <p>来自外部征信局A，统计客户所有信贷记录中逾期超过30天的合同占比。>30天属于实质性违约，能捕捉客户在 Home Credit 体系外的真实信用表现。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">3</div>
-                            <div class="feature-info">
-                                <h4>近9个月拒贷次数</h4>
-                                <p>统计客户最近9个月被其他金融机构拒绝贷款的累计次数。属于典型的多头申请/反欺诈信号——短期内频繁被拒说明其他机构的风控模型已识别其风险。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">4</div>
-                            <div class="feature-info">
-                                <h4>征信局A逾期占比</h4>
-                                <p>统计客户所有信贷记录中只要发生过逾期的合同占比。反映客户的整体还款纪律性，频繁短期逾期说明资金管理处于"紧绷"状态。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">5</div>
-                            <div class="feature-info">
-                                <h4>上次被拒原因（目标编码）</h4>
-                                <p>客户最近一次被 Home Credit 拒绝的具体原因，经目标编码处理。不同拒贷原因代表不同风险类型，如"资料造假"可能涉及欺诈。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">6</div>
-                            <div class="feature-info">
-                                <h4>近12个月最大逾期天数（含宽限）</h4>
-                                <p>近一年内客户最长一次逾期了多少天，包含宽限期在内。比平均逾期天数更能反映极端风险，一次逾期90天往往意味着突发性重大财务危机。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">7</div>
-                            <div class="feature-info">
-                                <h4>上次取消原因（目标编码）</h4>
-                                <p>客户最近一次主动取消贷款申请的原因，经目标编码处理。取消原因隐含客户真实意图。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">8</div>
-                            <div class="feature-info">
-                                <h4>近6个月最大期限</h4>
-                                <p>客户在近6个月内申请的历史贷款中，期限最长的那笔贷款的期数/月数。若近期频繁申请长期大额贷款，可能暗示资金缺口大。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">9</div>
-                            <div class="feature-info">
-                                <h4>近6个月最大逾期天数</h4>
-                                <p>近期行为的预测力大于远期行为，6个月窗口能反映客户"当前"的还款能力与意愿。</p>
-                            </div>
-                        </div>
-                        <div class="feature-item">
-                            <div class="feature-rank">10</div>
-                            <div class="feature-info">
-                                <h4>近12个月最大逾期天数</h4>
-                                <p>12个月窗口能捕捉季节性或周期性的资金紧张模式（如春节、开学季）。</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 评分卡策略 -->
-        <section id="scorecard" class="section">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-num">03</span>
-                    <h2>评分卡策略</h2>
-                    <p class="section-subtitle">Scorecard & Threshold Strategy</p>
-                </div>
-
-                <div class="content-grid two-col">
-                    <div class="card">
-                        <h3>评分构造</h3>
-                        <p>将 XGBoost 预测的违约概率通过标准评分卡公式映射为信用评分：</p>
-                        <div class="formula-box">
-                            Score = 600 - 20/ln(2) × ln(odds)
-                        </div>
-                        <p>基准 odds 设为 1:19。测试集评分范围 <strong>636~929 分</strong>，中位数 <strong>807 分</strong>。从评分区间分析可见，随着评分升高，坏客户占比呈现严格单调递减。</p>
-                    </div>
-                    <div class="card">
-                        <h3>评分区间风险分布</h3>
-                        <div class="score-stats">
-                            <div class="score-stat">
-                                <span class="score-range low">636~665</span>
-                                <span class="score-risk">坏客率 50%</span>
-                            </div>
-                            <div class="score-stat">
-                                <span class="score-range mid">750~760</span>
-                                <span class="score-risk">坏客率 1.1%</span>
-                            </div>
-                            <div class="score-stat">
-                                <span class="score-range high">899~929</span>
-                                <span class="score-risk">坏客率 0%</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="content-grid two-col mt-2">
-                    <div class="image-card">
-                        <img src="images/01_xgboost_score_bins_analysis.png" alt="评分区间分析" loading="lazy">
-                        <p class="caption">XGBoost 评分区间：客户分布与坏客户占比</p>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/01_xgboost_score_distribution.png" alt="评分分布" loading="lazy">
-                        <p class="caption">XGBoost 好坏客户评分分布</p>
-                    </div>
-                </div>
-
-                <div class="card mt-2">
-                    <h3>业务应用建议与阈值策略</h3>
-                    <p class="mb-1">基于 XGBoost 评分，建议采用分档准入策略，在通过率与风险水平之间取得平衡：</p>
+                    <h3>全量测试集表现（WEEK_NUM 76~91，4-Week 官方评分 窗口）</h3>
                     <div class="table-wrapper">
                         <table class="data-table">
                             <thead>
-                                <tr>
-                                    <th>策略类型</th>
-                                    <th>阈值</th>
-                                    <th>通过率</th>
-                                    <th>准入坏客率</th>
-                                    <th>适用场景</th>
-                                </tr>
+                                <tr><th>客户群</th><th>样本量</th><th>使用模型</th><th>AUC</th><th>Gini</th><th>MeanG</th><th>StdG</th><th>官方评分</th></tr>
                             </thead>
                             <tbody>
-                                <tr><td>保守稳健型</td><td>770分</td><td>~82%</td><td>~0.86%</td><td>风险偏好低的存量经营期</td></tr>
-                                <tr class="best-row"><td><strong>平衡进取型 ⭐</strong></td><td><strong>750~760分</strong></td><td>87%~92%</td><td>1.06%~1.29%</td><td><strong>性价比拐点，推荐常规使用</strong></td></tr>
-                                <tr><td>获客宽松型</td><td>720~730分</td><td>~98%</td><td>1.7%~1.9%</td><td>业务扩张期</td></tr>
-                                <tr><td>极严格型</td><td>807分</td><td>~50%</td><td>0.3%</td><td>数学最优但业务上过于严苛</td></tr>
+                                <tr class="best-row"><td><strong>全量 (Combined)</strong></td><td>169,722</td><td><strong>非白户 XGBoost + 白户 XGBoost</strong></td><td class="highlight-cell"><strong>0.8504</strong></td><td><strong>0.7009</strong></td><td><strong>0.6939</strong></td><td><strong>0.0232</strong></td><td class="highlight-cell"><strong>0.6707</strong></td></tr>
+                                <tr><td>非白户 Solo</td><td>164,873</td><td>非白户 XGBoost</td><td>0.8522</td><td>0.7044</td><td>0.6971</td><td>0.0240</td><td>0.6730</td></tr>
+                                <tr><td>白户 Solo</td><td>4,849</td><td>白户 XGBoost</td><td>0.7919</td><td>0.5838</td><td>0.5837</td><td>0.0504</td><td>0.5334</td></tr>
                             </tbody>
                         </table>
                     </div>
                     <div class="alert alert-success mt-1">
-                        <strong>核心发现：</strong>760分是"性价比拐点"——仅拒绝约12%客户即可实现风险降51%；780分进入"高效能区"，通过率仍有75%，风险降幅达68%。建议常规经营期采用 750~760 分作为拦截阈值。
+                        <strong>官方评分 = Mean(Gini) − Std(Gini)，每4周一个窗口（W76-79/80-83/84-87/88-91）：</strong>非白户 XGBoost + 白户 XGBoost 组合以 <strong>Combined 官方评分 0.6707</strong> 胜出（16种组合中排名第1）。详见 <a href="#model-training">08 模型训练</a>。
                     </div>
                 </div>
 
-                <div class="image-card mt-2">
-                    <img src="images/threshold_risk_reduction.png" alt="风险降幅曲线" loading="lazy">
-                    <p class="caption">通过率 vs 风险降幅权衡曲线（XGBoost）</p>
+                <div class="image-card mt-2 full-width-image">
+                    <img src="images/dual_xgb_top10_features.png" alt="双XGB关键变量TOP10" loading="lazy">
+                    <p class="caption">双 XGBoost 模型关键变量 TOP10 对比：非白户由历史逾期驱动，白户由人口画像+新构造特征驱动</p>
                 </div>
+
+                <div class="card highlight-card mt-2">
+                    <h3>评分卡策略</h3>
+                    <p>对非白户和白户的 XGBoost 模型分别按<strong>违约概率 → 模型评分</strong>映射，基于模型评分给出<strong>风险准入阈值策略</strong>，实现分群差异化的通过率与风险控制。</p>
+                </div>
+
+                <div class="content-grid two-col mt-2">
+                    <div class="card">
+                        <h3><svg class="ico-nw" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户评分卡 (XGBoost)</h3>
+                        <div class="formula-box">
+                            Score = 600 - 20/ln(2) × ln(odds / 19)
+                        </div>
+                        <div class="table-wrapper mt-1">
+                            <table class="data-table">
+                                <thead><tr><th>参数</th><th>取值</th><th>说明</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Base Score</td><td>600</td><td>基准分数</td></tr>
+                                    <tr class="best-row"><td><strong>评分范围</strong></td><td class="highlight-cell"><strong>619 ~ 936</strong></td><td><strong>均值 804，中位 805</strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h3><svg class="ico-wh" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户评分卡 (XGBoost)</h3>
+                        <div class="formula-box">
+                            Score = 600 - 20/ln(2) × ln(odds / 37)
+                        </div>
+                        <div class="table-wrapper mt-1">
+                            <table class="data-table">
+                                <thead><tr><th>参数</th><th>取值</th><th>说明</th></tr></thead>
+                                <tbody>
+                                    <tr><td>Base Score</td><td>600</td><td>基准分数</td></tr>
+                                    <tr class="best-row"><td><strong>评分范围</strong></td><td class="highlight-cell"><strong>704 ~ 904</strong></td><td><strong>均值 826，中位 829</strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 关键分箱数据对比 -->
+                <div class="content-grid two-col mt-2">
+                    <div class="card">
+                        <h4><svg class="ico-nw" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户评分区间数据</h4>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead><tr><th>评分区间</th><th>客户占比</th><th>坏客率</th></tr></thead>
+                                <tbody>
+                                    <tr><td>619~755</td><td>10.0%</td><td class="highlight-cell">17.26%</td></tr>
+                                    <tr><td>755~772</td><td>10.0%</td><td>5.76%</td></tr>
+                                    <tr><td>772~784</td><td>10.0%</td><td>3.37%</td></tr>
+                                    <tr><td>784~795</td><td>10.0%</td><td>2.11%</td></tr>
+                                    <tr><td>795~805</td><td>10.0%</td><td>1.33%</td></tr>
+                                    <tr><td>805~816</td><td>10.0%</td><td>0.84%</td></tr>
+                                    <tr><td>816~837</td><td>20.0%</td><td>0.40%</td></tr>
+                                    <tr><td>837~936</td><td>20.0%</td><td>0.11%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <h4><svg class="ico-wh" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户评分区间数据</h4>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead><tr><th>评分区间</th><th>客户占比</th><th>坏客率</th></tr></thead>
+                                <tbody>
+                                    <tr><td>704~792</td><td>15.8%</td><td class="highlight-cell">7.96%</td></tr>
+                                    <tr><td>795~801</td><td>19.9%</td><td>3.68%</td></tr>
+                                    <tr><td>803~817</td><td>15.1%</td><td>1.95%</td></tr>
+                                    <tr><td>820~836</td><td>10.3%</td><td>1.44%</td></tr>
+                                    <tr><td>836~838</td><td>9.0%</td><td>0.83%</td></tr>
+                                    <tr><td>842~851</td><td>10.3%</td><td>0.64%</td></tr>
+                                    <tr><td>869~891</td><td>17.3%</td><td>0.28%</td></tr>
+                                    <tr><td>903</td><td>2.2%</td><td>0.00%</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 差异化阈值策略 -->
+                <div class="card mt-2">
+                    <h3>差异化阈值策略</h3>
+                    <p class="mb-1">基于两群评分分布和业务需求，建议采用分群差异化阈值：<strong>非白户采用评分≥755分准入，白户采用评分≥718分准入</strong>。</p>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>策略类型</th><th>非白户阈值</th><th>非白户通过率</th><th>非白户坏客率</th><th>白户阈值</th><th>白户通过率</th><th>白户坏客率</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td>保守稳健</td><td>≥ 773</td><td>79.8%</td><td>0.77%</td><td>≥ 736</td><td>40.3%</td><td>0.46%</td></tr>
+                                <tr class="best-row"><td><strong>平衡进取 ⭐</strong></td><td><strong>≥ 755</strong></td><td><strong>89.9%</strong></td><td><strong>1.15%</strong></td><td><strong>≥ 718</strong></td><td><strong>64.9%</strong></td><td><strong>0.70%</strong></td></tr>
+                                <tr><td>获客宽松</td><td>≥ 741</td><td>95.0%</td><td>1.47%</td><td>≥ 697</td><td>89.9%</td><td>1.42%</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-success mt-1">
+                        <strong>核心逻辑：</strong>非白户的"性价比拐点"在 755 分（通过率 89.9% → 坏客率 1.15%、风险降幅 46.7%），白户在 718 分（通过率 64.9% → 坏客率 0.70%、风险降幅 68.3%）。白户需要更低的通过率来实现同等风险控制，这是因为白户缺乏历史行为信号，模型区分度天然低于非白户；同时也满足白户谨慎准入的业务逻辑。
+                    </div>
+                </div>
+
+                <!-- 通过率 vs 风险降幅 -->
+                <div class="image-card mt-2 full-width-image">
+                    <img src="images/nw_threshold_risk_reduction.png" alt="非白户通过率vs风险降幅" loading="lazy">
+                    <p class="caption">非白户 XGBoost — 通过率 vs 风险降幅权衡曲线（推荐区间：通过率 87~95%）</p>
+                </div>
+
+                <div class="image-card mt-2 full-width-image">
+                    <img src="images/white_threshold_risk_reduction.png" alt="白户通过率vs风险降幅" loading="lazy">
+                    <p class="caption">白户 XGBoost — 通过率 vs 风险降幅权衡曲线（推荐区间：通过率 55~70%）</p>
+                </div>
+
             </div>
         </section>
 
@@ -397,7 +374,7 @@
         <section id="eda" class="section section-alt">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">04</span>
+                    <span class="section-num">03</span>
                     <h2>探索性数据分析</h2>
                     <p class="section-subtitle">Exploratory Data Analysis</p>
                 </div>
@@ -417,6 +394,25 @@
                         <div class="mini-stat">
                             <span class="mini-value">3.14%</span>
                             <span class="mini-label">违约样本</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-2">
+                    <h3>白户识别</h3>
+                    <p>通过统计每个 case_id 在 credit_bureau 表中的记录数，全量客户中 <strong>5.06% 为征信白户</strong>（~7.7 万样本），即完全缺失外部征信历史。白户违约率 <strong>2.21%</strong>（vs 非白户 3.19%），但因缺乏历史信用信号，传统征信特征完全失效，需独立构建特征和模型。</p>
+                    <div class="mini-stats">
+                        <div class="mini-stat">
+                            <span class="mini-value">94.94%</span>
+                            <span class="mini-label">非白户</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-value highlight">5.06%</span>
+                            <span class="mini-label">白户 (~7.7万)</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-value">2.21% / 3.19%</span>
+                            <span class="mini-label">白户/非白户 违约率</span>
                         </div>
                     </div>
                 </div>
@@ -441,7 +437,7 @@
         <section id="missing-values" class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">05</span>
+                    <span class="section-num">04</span>
                     <h2>缺失值处理方案</h2>
                     <p class="section-subtitle">Missing Value Imputation</p>
                 </div>
@@ -473,20 +469,6 @@
                     </table>
                 </div>
 
-                <div class="alert alert-warning mt-2">
-                    <strong>高风险提示：</strong>clientscnt_136L 缺失率 99.97%，lastotherinc_902A / lastotherlnsexpense_631A 缺失率 99.8%。虽逻辑上缺失=0，但信息含量极低，建议作为辅助特征而非核心特征。
-                </div>
-
-                <div class="content-grid two-col mt-2">
-                    <div class="card">
-                        <h3>日期型字段特殊处理</h3>
-                        <p>15 个日期字段不能直接填 0（0 会被误解为 1970-01-01），统一转为距离 date_decision 的天数差，缺失设为 -1。同时保留 is_{col}_missing 标记列（0/1），树模型可能更关注"是否有该日期记录"而非具体天数。</p>
-                    </div>
-                    <div class="card">
-                        <h3>特殊字段处理</h3>
-                        <p>monthsannuity_845L（期数）、interestrate_311L（利率）、eir_270L（实际年化利率）不适合直接填 0。处理策略：① 生成 is_{col}_missing 标记列；② 缺失填中位数，或按信贷类型分群填充中位数。</p>
-                    </div>
-                </div>
             </div>
         </section>
 
@@ -494,297 +476,196 @@
         <section id="feature-engineering" class="section section-alt">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">06</span>
+                    <span class="section-num">05</span>
                     <h2>特征工程</h2>
                     <p class="section-subtitle">Feature Engineering</p>
                 </div>
 
-                <p class="section-intro">基于业务理解和 EDA 发现，从 static 表出发构造三类高价值衍生特征：日期衍生特征、金额比率特征、DPD 聚合特征。同时对 applprev 和 credit_bureau 表进行聚合，生成历史行为汇总特征。最终输出 <strong>704 列</strong> 特征宽表。</p>
+                <p class="section-intro">总计构造 <strong>421 个</strong>新特征，按业务含义分为四大类：逾期信息、申请信息、税务信息、物理信息。最终输出含 <strong>711 个</strong>特征的宽表。</p>
 
-                <div class="feature-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">📅</div>
-                        <h3>日期衍生特征</h3>
-                        <div class="feature-count">94 个新特征</div>
-                        <ul>
-                            <li>时间窗口标记：7d/30d/90d/180d/360d/720d 窗口标记</li>
-                            <li>日期间差值：获批与被拒间隔、违约新鲜度</li>
-                            <li>行为活跃度聚合：近X月有还款行为月份数、最大逾期天数</li>
+                <div class="content-grid two-col mt-2">
+                    <!-- 逾期信息 -->
+                    <div class="card">
+                        <h4>⏰ 逾期信息 <span class="badge">120 个特征</span></h4>
+                        <p class="mb-1 text-light">征信局 DPD + 历史还款逾期行为聚合。非白户模型最强信号来源，TOP5 IV 全部来自此类。</p>
+                        <ul class="check-list">
+                            <li><strong>bureau_a_overdue_ratio</strong> — 外部信贷逾期合同占比（IV=0.359，最强单因子）</li>
+                            <li><strong>bureau_a_dpd_mean</strong> — 外部信贷平均逾期天数（IV=0.332）</li>
+                            <li><strong>bureau_a_dpd_gt30_ratio</strong> — 逾期超30天合同占比（实质性违约信号，IV=0.278）</li>
+                            <li><strong>late_to_early_ratio</strong> — 逾期/提前还款比。衡量还款行为倾向，>1表示偏向逾期</li>
+                            <li><strong>applprev_overall_max_hist_dpd</strong> — 历史申请中最高逾期天数（IV=0.212）</li>
                         </ul>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">💰</div>
-                        <h3>金额比率特征</h3>
-                        <div class="feature-count">42 个新特征</div>
-                        <ul>
-                            <li>DTI（债务收入比）= currdebt_22A / maininc_215A</li>
-                            <li>首付比 = downpmt_116A / credamount_770A</li>
-                            <li>月供收入比 = annuity_780A / maininc_215A</li>
-                            <li>历史还款比例 = totalsettled_863A / totaldebt_9A</li>
+                    <!-- 申请信息 -->
+                    <div class="card">
+                        <h4>📋 申请信息 <span class="badge">194 个特征</span></h4>
+                        <p class="mb-1 text-light">历史申请行为 + 外部信贷规模 + 债务负担。数量最多，覆盖 4 个时间窗口（1/3/6/12月）。</p>
+                        <ul class="check-list">
+                            <li><strong>lastrejectreason_759M_te</strong> — 最近拒贷原因（Target Encoding，IV=0.192）</li>
+                            <li><strong>applprev_overall_approval_rate</strong> — 历史审批通过率。越高 = 信用越好（IV=0.192）</li>
+                            <li><strong>lastrejectdate_50D_days</strong> — 距最近被拒天数。越近风险越高（IV=0.188）</li>
+                            <li><strong>applprev_total_rejected_count</strong> — 累计被拒次数。多头申请核心信号（IV=0.129）</li>
+                            <li><strong>applprev_total_cancelled_count</strong> — 累计取消申请次数。申请后主动放弃可能暗示不满条件（IV=0.093）</li>
                         </ul>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">📊</div>
-                        <h3>历史申请聚合</h3>
-                        <div class="feature-count">147 列</div>
-                        <ul>
-                            <li>applprev 表 1:N 聚合：count、mean、max、last</li>
-                            <li>status_219L 透视统计：批准/拒绝/取消次数</li>
-                            <li>历史申请金额、期限、状态的统计特征</li>
+                    <!-- 税务信息 -->
+                    <div class="card">
+                        <h4>💰 税务信息 <span class="badge">25 个特征</span></h4>
+                        <p class="mb-1 text-light">税务登记 A/B/C 三表聚合。反映收入水平与稳定性，对白户尤为重要。</p>
+                        <ul class="check-list">
+                            <li><strong>tax_total_income</strong> — 税务总收入。A+B+C 三表金额求和（IV=0.066）</li>
+                            <li><strong>tax_record_count</strong> — 税务记录总数。记录越多 = 收入历史越完整（IV=0.046）</li>
+                            <li><strong>tax_registry_c_total_amount</strong> — 工资发放总额。持续工资收入 = 还款能力（IV=0.042）</li>
+                            <li><strong>tax_registry_a_total_amount</strong> — 税务登记收入总额（IV=0.030）</li>
+                            <li><strong>tax_registry_c_employer_nunique</strong> — 雇主数量。频繁换雇主 = 收入不稳定</li>
                         </ul>
                     </div>
-                    <div class="feature-card">
-                        <div class="feature-icon">🏦</div>
-                        <h3>征信局聚合</h3>
-                        <div class="feature-count">多表合并</div>
-                        <ul>
-                            <li>活跃+已关闭的 totalamount = 外部总信贷规模</li>
-                            <li>overdueamount > 0 的合同数 = 当前外部逾期笔数</li>
-                            <li>outstandingamount / credlmt = 信用卡使用率</li>
-                            <li>dpdmax > 60 的合同数 = 严重违约次数</li>
+                    <!-- 物理信息 -->
+                    <div class="card">
+                        <h4>🧬 物理信息 <span class="badge">82 个特征</span></h4>
+                        <p class="mb-1 text-light">人口统计 + 地理位置 + 家庭结构 + 借记卡行为。相对稳定，不易被申请人操纵。</p>
+                        <ul class="check-list">
+                            <li><strong>person_age_birth</strong> — 年龄。从 birth_259D 精确计算，clip 18~85（IV=0.088）</li>
+                            <li><strong>cb_age_years</strong> — 征信局记录年龄。与 person_age 交叉验证身份一致性（IV=0.093）</li>
+                            <li><strong>contact_district_badrate</strong> — 联系区域历史坏客率。地理风险定价（IV=0.053）</li>
+                            <li><strong>person_incometype_1044T_badrate</strong> — 收入类型坏客率。不同收入来源对应不同风险等级</li>
+                            <li><strong>household_n_employed</strong> — 家庭就业人数。就业人数越多还款能力越强</li>
                         </ul>
-                    </div>
-                </div>
-
-                <div class="card mt-2">
-                    <h3>PSI 稳定性检验</h3>
-                    <p>按 WEEK_NUM 将数据分为多个时间窗口，计算各特征在不同窗口间的 PSI（Population Stability Index）。剔除 PSI > 0.25 的不稳定特征，确保模型跨时间部署的稳健性。最终 698 个特征中，61 个极不稳定特征已剔除。</p>
-                    <div class="alert alert-info mt-1">
-                        <strong>稳定性风险预判：</strong>金额类、利率类、申请频次类、征信查询类、类别型字段最容易随时间漂移，需重点监控 PSI。
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- IV 计算与特征筛选 -->
+        <!-- 特征筛选 -->
         <section id="iv-selection" class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">07</span>
-                    <h2>IV 计算与特征筛选</h2>
-                    <p class="section-subtitle">IV Calculation & Feature Selection</p>
-                </div>
-
-                <div class="card">
-                    <p>Information Value（IV）是信用风险建模中衡量特征预测力的经典指标。本项目对最终宽表中 <strong>701 个特征</strong>计算 IV（等频分箱），并按预测力分层。</p>
-                </div>
-
-                <div class="content-grid two-col mt-2">
-                    <div class="card">
-                        <h3>IV 预测力等级</h3>
-                        <div class="table-wrapper">
-                            <table class="data-table">
-                                <thead>
-                                    <tr><th>IV 范围</th><th>预测力等级</th><th>处理建议</th></tr>
-                                </thead>
-                                <tbody>
-                                    <tr><td>IV > 0.5</td><td>极强</td><td>重点关注，可能为"未来信息"需排查</td></tr>
-                                    <tr><td>0.1 ≤ IV ≤ 0.5</td><td>中等~强</td><td>核心建模特征</td></tr>
-                                    <tr><td>0.02 ≤ IV < 0.1</td><td>弱</td><td>辅助特征，可视内存情况保留</td></tr>
-                                    <tr><td>IV < 0.02</td><td>无预测力</td><td>建议剔除</td></tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h3>特征筛选标准</h3>
-                        <ul class="check-list">
-                            <li>IV > 0.02（中等以上预测力）</li>
-                            <li>PSI ≤ 0.25（跨时间稳定）</li>
-                            <li>剔除业务逻辑异常变量（如明显为未来信息的数据泄露字段）</li>
-                        </ul>
-                        <div class="alert alert-info mt-1">
-                            <strong>筛选阈值说明：</strong>实际筛选阈值可根据模型效果微调。本项目最终采用 IV ≥ 0.01 的宽松标准，保留更多特征供树模型自动选择。
-                        </div>
-                    </div>
+                    <span class="section-num">06</span>
+                    <h2>特征筛选</h2>
+                    <p class="section-subtitle">Feature Selection</p>
                 </div>
 
                 <div class="card mt-2">
-                    <h3>Top 特征 IV 值</h3>
-                    <div class="top-features">
-                        <div class="top-feature-item">
-                            <span class="top-rank">1</span>
-                            <span class="top-name">bureau_a_overdue_ratio</span>
-                            <span class="top-iv">0.359</span>
+                    <h3>分群差异化筛选标准</h3>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead><tr><th>客户群</th><th>IV阈值</th><th>PSI阈值</th><th>征信字段</th><th>特征池</th><th>入模数</th></tr></thead>
+                            <tbody>
+                                <tr class="best-row"><td><strong>非白户</strong></td><td><strong>IV > 0.02</strong></td><td><strong>PSI ≤ 0.25</strong></td><td>有</td><td>267</td><td>155</td></tr>
+                                <tr><td><strong>白户</strong></td><td><strong>IV > 0.05</strong></td><td>不限制</td><td>无</td><td>127</td><td>14</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="alert alert-info mt-1">
+                        <strong>为什么白户用 IV>0.05？</strong>白户训练样本仅 ~6.9万（坏样本 ~1,800），需严格控制特征数防过拟合。14个高IV特征已足够支撑 max_depth=2 的浅层XGBoost。非白户有 ~116.6万训练样本，可容纳更多特征。
+                    </div>
+                </div>
+
+                <!-- 双模型关键变量 TOP10 -->
+                <div class="content-grid two-col mt-2">
+                    <div class="card">
+                        <h3><svg class="ico-nw" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户 TOP 10 重要字段</h3>
+                        <p class="mb-1">共使用 <strong>155 个特征</strong>（IV>0.02+PSI≤0.25），核心驱动为征信局逾期行为与申请拒贷记录：</p>
+                        <div class="feature-list">
+                            <div class="feature-item"><div class="feature-rank">1</div><div class="feature-info"><h4>征信局A逾期占比</h4><p>IV=0.349，非白户最强单一预测因子。所有信贷合同中发生逾期的比例。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">2</div><div class="feature-info"><h4>征信局A逾期>30天占比</h4><p>IV=0.280，>30天为实质性违约信号。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">3</div><div class="feature-info"><h4>近9个月拒贷次数</h4><p>被多家机构拒贷 = 其他风控模型已识别风险，多头申请核心信号。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">4</div><div class="feature-info"><h4>最近拒贷原因（WOE编码）</h4><p>IV=0.199，不同拒贷原因代表不同风险类型。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">5</div><div class="feature-info"><h4>账户关闭24月内平均逾期天数</h4><p>IV=0.228，刻画客户历史还款纪律。</p></div></div>
                         </div>
-                        <div class="top-feature-item">
-                            <span class="top-rank">2</span>
-                            <span class="top-name">bureau_a_dpd_mean</span>
-                            <span class="top-iv">0.332</span>
+                        <details class="mt-1">
+                            <summary>查看 TOP 6-10</summary>
+                            <div class="feature-list mt-1">
+                                <div class="feature-item"><div class="feature-rank">6</div><div class="feature-info"><h4>历史申请整体最大DPD</h4><p>IV=0.219，申请历史中最严重的逾期天数。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">7</div><div class="feature-info"><h4>近12月最大DPD</h4><p>IV=0.219，近期逾期严重程度。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">8</div><div class="feature-info"><h4>近6月/近12月逾期恶化比</h4><p>逾期趋势指标——上升=风险恶化。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">9</div><div class="feature-info"><h4>征信局A逾期>60天占比</h4><p>IV=0.191，严重违约信号。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">10</div><div class="feature-info"><h4>历史申请审批率</h4><p>IV=0.171，审批通过率低=多机构已识别风险。</p></div></div>
+                            </div>
+                        </details>
+                    </div>
+
+                    <!-- 白户TOP10详情 -->
+                    <div class="card">
+                        <h3><svg class="ico-wh" width="16" height="16" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户 TOP 10 重要字段</h3>
+                        <p class="mb-1">共使用 <strong>14 个特征</strong>（IV>0.05），核心驱动为物理属性和税务记录：</p>
+                        <div class="feature-list">
+                            <div class="feature-item"><div class="feature-rank">1</div><div class="feature-info"><h4>年龄</h4><p>IV=0.209，白户最强预测因子。年龄与违约呈反比关系，年轻白户风险显著更高。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">2</div><div class="feature-info"><h4>收入类型</h4><p>IV=0.198，不同收入类型（工薪/自雇/退休等）对应不同违约率。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">3</div><div class="feature-info"><h4>雇佣行业</h4><p>IV=0.176，行业违约率差异显著——高风险行业人群即使无征信记录也可预警。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">4</div><div class="feature-info"><h4>联系区域</h4><p>IV=0.120，区域级别的信用风险映射（类似"地域风险评分"）。</p></div></div>
+                            <div class="feature-item"><div class="feature-rank">5</div><div class="feature-info"><h4>家庭状态</h4><p>IV=0.110，已婚/离异/单身等家庭状态的违约率差异。</p></div></div>
                         </div>
-                        <div class="top-feature-item">
-                            <span class="top-rank">3</span>
-                            <span class="top-name">bureau_a_dpd_gt30_ratio</span>
-                            <span class="top-iv">0.278</span>
-                        </div>
-                        <div class="top-feature-item">
-                            <span class="top-rank">4</span>
-                            <span class="top-name">avgdpdtolclosure24_3658938P</span>
-                            <span class="top-iv">0.245</span>
-                        </div>
-                        <div class="top-feature-item">
-                            <span class="top-rank">5</span>
-                            <span class="top-name">maxdbddpdtollast12m_3658940P</span>
-                            <span class="top-iv">0.218</span>
-                        </div>
+                        <details class="mt-1">
+                            <summary>查看 TOP 6-10</summary>
+                            <div class="feature-list mt-1">
+                                <div class="feature-item"><div class="feature-rank">6</div><div class="feature-info"><h4>性别</h4><p>IV=0.098，性别维度的违约率差异。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">7</div><div class="feature-info"><h4>税务C记录数</h4><p>IV=0.086，税务记录越多=正规就业程度越高。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">8</div><div class="feature-info"><h4>税务C总金额</h4><p>IV=0.073，税务系统记录的收入。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">9</div><div class="feature-info"><h4>关联角色类型数</h4><p>IV=0.064，多重角色=更复杂的金融关系。</p></div></div>
+                                <div class="feature-item"><div class="feature-rank">10</div><div class="feature-info"><h4>教育等级</h4><p>IV=0.063，教育水平与信用风险存在关联。</p></div></div>
+                            </div>
+                        </details>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- 模型训练 -->
+        <!-- 模型训练与交叉验证 -->
         <section id="model-training" class="section section-alt">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">08</span>
-                    <h2>模型训练与评估</h2>
-                    <p class="section-subtitle">Model Training & Evaluation</p>
+                    <span class="section-num">07</span>
+                    <h2>模型训练</h2>
+                    <p class="section-subtitle">Model Training &amp; Key Feature Analysis</p>
                 </div>
 
-                <div class="card">
-                    <p>采用时间序列切分策略：按 WEEK_NUM 排序，前 70% 为训练集，中间 15% 为验证集，后 15% 为测试集。对比三种模型：LightGBM、XGBoost、Decision Tree（基线）。</p>
+                <div class="card highlight-card">
+                    <h3>最终方案：非白户 XGBoost + 白户 XGBoost</h3>
+                    <p>非白户与白户分别使用 <strong>4 种模型</strong>（XGBoost / LightGBM / Decision Tree / Logistic Regression）进行训练，其中<strong>非白户 XGBoost max_depth=4</strong>、<strong>白户 XGBoost max_depth=2</strong>。两两交叉组合共 4×4=16 种，在全量测试集上对比，<strong>非白户 XGBoost + 白户 XGBoost</strong> 以 Combined 官方评分 <strong>0.6707</strong>（4-Week 官方评分）排名第1。XGBoost 与 LightGBM 组合包揽前4名（官方评分差距 < 0.003），Decision Tree 和 Logistic Regression 组合 官方评分 均 < 0.67。</p>
                 </div>
 
+
+                <!-- 官方评分 Matrix -->
                 <div class="card mt-2">
-                    <h3>评估指标体系</h3>
+                    <h3>16种交叉组合 — 综合 4-Week 官方评分排名</h3>
                     <div class="table-wrapper">
                         <table class="data-table">
                             <thead>
-                                <tr><th>指标</th><th>说明</th><th>风控解读</th></tr>
+                                <tr><th>Rank</th><th>非白户模型</th><th>白户模型</th><th>Full AUC</th><th>MeanG</th><th>StdG</th><th>官方评分</th></tr>
                             </thead>
                             <tbody>
-                                <tr><td>AUC</td><td>ROC曲线下面积</td><td>0.5=随机，0.8+优秀</td></tr>
-                                <tr><td>KS</td><td>Kolmogorov-Smirnov</td><td>最大区分度，>0.3可用，>0.4良好</td></tr>
-                                <tr><td>Gini</td><td>2*AUC-1</td><td>与AUC等价，但更直观</td></tr>
-                                <tr><td>Precision</td><td>精确率</td><td>预测为违约中实际违约的比例</td></tr>
-                                <tr><td>Recall</td><td>召回率</td><td>实际违约中被正确预测的比例</td></tr>
-                                <tr><td>F1</td><td>调和平均</td><td>Precision与Recall的平衡</td></tr>
+                                <tr class="best-row"><td><strong>1</strong></td><td><strong>XGBoost</strong></td><td><strong>XGBoost</strong></td><td class="highlight-cell"><strong>0.8504</strong></td><td><strong>0.6939</strong></td><td><strong>0.0232</strong></td><td class="highlight-cell"><strong>0.6707</strong></td></tr>
+                                <tr><td>2</td><td>XGBoost</td><td>LightGBM</td><td>0.8499</td><td>0.6928</td><td>0.0229</td><td>0.6699</td></tr>
+                                <tr><td>3</td><td>LightGBM</td><td>XGBoost</td><td>0.8492</td><td>0.6916</td><td>0.0230</td><td>0.6686</td></tr>
+                            </tbody>
+                            <tbody class="collapsible-rows" style="display: none;">
+                                <tr><td>4</td><td>LightGBM</td><td>LightGBM</td><td>0.8486</td><td>0.6905</td><td>0.0227</td><td>0.6678</td></tr>
+                                <tr><td>5</td><td>XGBoost</td><td>Decision Tree</td><td>0.8493</td><td>0.6914</td><td>0.0240</td><td>0.6674</td></tr>
+                                <tr><td>6</td><td>LightGBM</td><td>Decision Tree</td><td>0.8481</td><td>0.6890</td><td>0.0238</td><td>0.6652</td></tr>
+                                <tr><td>7</td><td>XGBoost</td><td>Logistic Regression</td><td>0.8337</td><td>0.6617</td><td>0.0208</td><td>0.6409</td></tr>
+                                <tr><td>8</td><td>LightGBM</td><td>Logistic Regression</td><td>0.8336</td><td>0.6615</td><td>0.0211</td><td>0.6404</td></tr>
+                                <tr><td>9</td><td>Logistic Regression</td><td>XGBoost</td><td>0.7966</td><td>0.5873</td><td>0.0295</td><td>0.5578</td></tr>
+                                <tr><td>10</td><td>Logistic Regression</td><td>LightGBM</td><td>0.7959</td><td>0.5860</td><td>0.0291</td><td>0.5569</td></tr>
+                                <tr><td>11</td><td>Logistic Regression</td><td>Decision Tree</td><td>0.7952</td><td>0.5842</td><td>0.0301</td><td>0.5541</td></tr>
+                                <tr><td>12</td><td>Logistic Regression</td><td>Logistic Regression</td><td>0.7812</td><td>0.5578</td><td>0.0263</td><td>0.5315</td></tr>
+                                <tr><td>13</td><td>Decision Tree</td><td>XGBoost</td><td>0.7782</td><td>0.5443</td><td>0.0447</td><td>0.4996</td></tr>
+                                <tr><td>14</td><td>Decision Tree</td><td>LightGBM</td><td>0.7774</td><td>0.5427</td><td>0.0444</td><td>0.4983</td></tr>
+                                <tr><td>15</td><td>Decision Tree</td><td>Decision Tree</td><td>0.7765</td><td>0.5405</td><td>0.0457</td><td>0.4949</td></tr>
+                            </tbody>
+                            <tbody>
+                                <tr class="weakest-row"><td>16</td><td>Decision Tree</td><td>Logistic Regression</td><td>0.7624</td><td>0.5144</td><td>0.0405</td><td>0.4738</td></tr>
+                            </tbody>
+                            <tbody id="expand-toggle-row">
+                                <tr class="expand-toggle-row"><td colspan="7">
+                                    <button class="expand-btn" onclick="var h=document.querySelector('.collapsible-rows');var b=this;if(h.style.display==='none'){h.style.display='';b.textContent='▲ 收起中间排名 (4-15)'}else{h.style.display='none';b.textContent='▼ 展开全部16种组合'}">▼ 展开全部16种组合</button>
+                                </td></tr>
                             </tbody>
                         </table>
                     </div>
                 </div>
 
-                <div class="model-cards mt-2">
-                    <div class="model-card">
-                        <div class="model-header">
-                            <h3>LightGBM</h3>
-                            <span class="model-badge">快速</span>
-                        </div>
-                        <p>num_leaves=31, learning_rate=0.05, feature_fraction=0.8, bagging_fraction=0.8, bagging_freq=5。使用 early stopping 防止过拟合。</p>
-                        <ul class="model-pros">
-                            <li>训练速度快，内存占用低，适合大规模数据</li>
-                            <li>对类别型特征支持好，可直接传入类别特征索引</li>
-                            <li>对缺失值有天然处理能力，与业务填充策略互补</li>
-                        </ul>
-                    </div>
-                    <div class="model-card best-model">
-                        <div class="model-header">
-                            <h3>XGBoost ⭐</h3>
-                            <span class="model-badge best">最优</span>
-                        </div>
-                        <p>max_depth=6, learning_rate=0.05, subsample=0.8, colsample_bytree=0.8。</p>
-                        <ul class="model-pros">
-                            <li>正则化更强（L1/L2），泛化能力通常优于 LightGBM</li>
-                            <li>对异常值更鲁棒</li>
-                            <li>在本项目中综合表现最优（测试 AUC 最高、官方得分最高）</li>
-                        </ul>
-                    </div>
-                    <div class="model-card">
-                        <div class="model-header">
-                            <h3>Decision Tree</h3>
-                            <span class="model-badge">基线</span>
-                        </div>
-                        <p>使用 sklearn DecisionTreeClassifier，max_depth=10, min_samples_leaf=100。</p>
-                        <ul class="model-pros">
-                            <li>可解释性强，可用于规则提取</li>
-                            <li>作为基线模型验证特征有效性</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- 模型可解释性 -->
-        <section id="shap" class="section section-alt">
-            <div class="container">
-                <div class="section-header">
-                    <span class="section-num">08.5</span>
-                    <h2>模型可解释性分析</h2>
-                    <p class="section-subtitle">SHAP Explainability</p>
-                </div>
-
-                <div class="card highlight-card">
-                    <p>使用 <strong>SHAP (SHapley Additive exPlanations)</strong> 对 XGBoost 模型进行全局与局部可解释性分析，基于 2,000 条测试样本（含 200 条违约样本）。SHAP 值量化了每个特征对模型预测的贡献，红色表示增加违约风险，蓝色表示降低违约风险。</p>
-                </div>
-
-                <!-- 全局特征重要性 -->
-                <h3 class="subsection-title">全局特征重要性</h3>
-                <p>下图展示了所有特征对模型预测的平均影响程度。左侧为 SHAP Beeswarm 图（每个点代表一个样本），右侧为平均绝对 SHAP 值的条形图。</p>
-                <div class="image-grid two-col">
-                    <div class="image-card">
-                        <img src="images/02_shap_summary.png?v=2" alt="SHAP Summary Plot" loading="lazy">
-                        <div class="image-caption">
-                            <strong>SHAP Beeswarm 图</strong> — 每个点代表一个样本，颜色表示特征值高低（红高蓝低），横轴为 SHAP 值（右=增加违约风险）
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/02_shap_bar.png?v=2" alt="SHAP Bar Plot" loading="lazy">
-                        <div class="image-caption">
-                            <strong>平均特征重要性</strong> — 按平均 |SHAP 值| 排序，"征信局A逾期占比"和"账户关闭24个月内平均逾期天数"是最重要的风险信号
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h4>关键发现</h4>
-                    <ul>
-                        <li><strong>征信局A逾期占比</strong>（A类征信局逾期账户比例）是最重要的风险指标，高值样本普遍具有更高的违约概率</li>
-                        <li><strong>账户关闭24个月内平均逾期天数</strong> 反映了近期信用行为的恶化程度，逾期天数越长风险越高</li>
-                        <li><strong>近9个月拒贷次数</strong> 和 <strong>信贷价格</strong>（贷款金额）也是重要的正向风险驱动因素</li>
-                        <li>低信贷价格、无逾期记录、提前还款占比高的客户则显著降低违约风险（负向 SHAP 值）</li>
-                    </ul>
-                </div>
-
-                <!-- 个体样本解释 -->
-                <h3 class="subsection-title mt-3">个体样本解释（典型案例）</h3>
-                <p>以下选取了三个具有代表性的样本，通过 SHAP Waterfall 图展示模型是如何从基础概率逐步推演到最终预测结果的。每个条形代表一个特征的贡献，红色向上（增加风险），蓝色向下（降低风险）。</p>
-
-                <div class="image-grid three-col">
-                    <div class="image-card">
-                        <img src="images/02_shap_waterfall_高风险坏客户_实际违约.png?v=2" alt="高风险坏客户" loading="lazy">
-                        <div class="image-caption">
-                            <strong>案例 A：高风险坏客户</strong><br>
-                            预测概率 <span style="color:#e53e3e">70.3%</span> | 实际：违约<br>
-                            <small>征信局A逾期占比(3.5%)和逾期>30天占比(3.5%)是主要风险驱动，信贷价格(252K)进一步推高违约概率</small>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/02_shap_waterfall_低风险好客户_实际正常.png?v=2" alt="低风险好客户" loading="lazy">
-                        <div class="image-caption">
-                            <strong>案例 B：低风险好客户</strong><br>
-                            预测概率 <span style="color:#38a169">0.04%</span> | 实际：正常<br>
-                            <small>信贷价格仅43K、征信局A无逾期、提前还款占比100%，多重保护因素将风险压至极低</small>
-                        </div>
-                    </div>
-                    <div class="image-card">
-                        <img src="images/02_shap_waterfall_被误判为高风险的好客户.png?v=2" alt="被误判样本" loading="lazy">
-                        <div class="image-caption">
-                            <strong>案例 C：误判样本</strong><br>
-                            预测概率 <span style="color:#f6ad55">42.9%</span> | 实际：正常<br>
-                            <small>账户关闭24个月内平均逾期13天、共享手机号客户数5人，导致模型过度警觉；但客户实际未违约，提示模型在该场景下可能偏保守</small>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h4>业务启示</h4>
-                    <ul>
-                        <li><strong>逾期历史是核心风险信号</strong>：征信局A的逾期相关特征在所有样本中都具有最高的 SHAP 贡献，建议贷前审批必须严格审查征信逾期记录</li>
-                        <li><strong>贷款金额与风险正相关</strong>：信贷价格（贷款金额）对高风险客户是风险放大器，对低风险客户则是保护因素（小额贷款客户倾向更谨慎），呈现非线性交互效应</li>
-                        <li><strong>模型存在误判空间</strong>：案例C显示，仅凭历史逾期记录可能将信用正在恢复的客户误判为高风险。建议在自动拒绝阈值附近引入人工复核机制，结合近期还款行为综合判断</li>
-                        <li><strong>可解释性支持监管合规</strong>：SHAP 分析为每个预测提供了透明的归因路径，满足金融监管机构对 AI 模型"可解释性"的要求</li>
-                    </ul>
-                </div>
+                <!-- 两模型特征逻辑对比 -->
             </div>
         </section>
 
@@ -792,37 +673,77 @@
         <section id="stability" class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">09</span>
+                    <span class="section-num">08</span>
                     <h2>模型稳定性分析</h2>
                     <p class="section-subtitle">Model Stability Analysis</p>
                 </div>
 
                 <div class="card highlight-card">
-                    <p>Home Credit <strong>官方评分公式</strong>：mean(Gini) - std(Gini)，按每 2 周一个时间窗口计算。该指标同时考核模型的区分能力和跨时间稳定性，是本项目区别于普通风控建模的核心。</p>
+                    <p>Home Credit <strong>官方评分公式</strong>：mean(Gini) − std(Gini)，按每 <strong>4 周</strong>一个时间窗口计算（W76-79/80-83/84-87/88-91）。该指标同时考核模型的区分能力和跨时间稳定性，是本项目区别于普通风控建模的核心。采用双模型最终<strong>官方评分为 0.67</strong>，模型较为稳定。</p>
                 </div>
 
-                <div class="alert alert-warning mt-2">
-                    <strong>官方评分解读：</strong>如果模型在训练期 AUC 很高，但到新周次（新数据分布）时 Gini 急剧下降，则 std(Gini) 会很大，官方得分会被拉低。因此特征稳定性（PSI）和模型正则化至关重要。
-                </div>
+                <!-- 双模型 PSI/KS 监控 -->
+                <div class="card mt-2">
+                    <h3>双模型每4周 PSI / KS 监控</h3>
+                    <p class="mb-1">按 4 周窗口（W76-79 / W80-83 / W84-87 / W88-91）分别监控非白户与白户模型的 PSI（Population Stability Index）和 KS（Kolmogorov-Smirnov）指标，确保模型在时间维度上保持稳定。</p>
 
-                <div class="content-grid two-col mt-2">
-                    <div class="card">
-                        <h3>跨时间稳定性监控</h3>
-                        <ul class="check-list">
-                            <li>按 WEEK_NUM 每 2 周切分一个时间窗口，共 46 个窗口</li>
-                            <li>计算每个窗口的 Gini、AUC、KS</li>
-                            <li>绘制 Gini 随时间变化曲线，识别漂移拐点</li>
-                            <li>对比 LightGBM / XGBoost / DecisionTree 的官方得分</li>
-                        </ul>
+                    <div class="content-grid two-col mt-2">
+                        <div class="card">
+                            <h4><svg class="ico-nw" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户 XGBoost 稳定性</h4>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr><th>时间窗口</th><th>样本量</th><th>AUC</th><th>KS</th><th>PSI</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>W76-79</td><td>~41,200</td><td class="highlight-cell">0.855</td><td>0.536</td><td>—</td></tr>
+                                    <tr><td>W80-83</td><td>~41,200</td><td>0.851</td><td>0.531</td><td>0.012</td></tr>
+                                    <tr><td>W84-87</td><td>~41,200</td><td>0.849</td><td>0.527</td><td>0.018</td></tr>
+                                    <tr class="best-row"><td><strong>W88-91</strong></td><td><strong>~41,200</strong></td><td><strong>0.854</strong></td><td><strong>0.534</strong></td><td><strong>0.021</strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-success mt-1">
+                            <strong>非白户结论：</strong>4 窗口 AUC 波动仅 0.006，KS 波动 0.009，PSI 均 < 0.25 阈值。模型区分力稳定，无明显时间漂移。
+                        </div>
                     </div>
                     <div class="card">
-                        <h3>稳定性优化策略</h3>
-                        <ul class="check-list">
-                            <li>特征层面：剔除 PSI > 0.25 的高漂移特征（金额类、利率类优先监控）</li>
-                            <li>模型层面：增加正则化（减小 max_depth、提高 min_child_weight）</li>
-                            <li>样本层面：按时间分层采样，确保训练集覆盖完整时间周期</li>
-                            <li>监控层面：建立线上 PSI 监控日报，触发阈值自动告警</li>
-                        </ul>
+                        <h4><svg class="ico-wh" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户 XGBoost 稳定性</h4>
+                        <div class="table-wrapper">
+                            <table class="data-table">
+                                <thead>
+                                    <tr><th>时间窗口</th><th>样本量</th><th>AUC</th><th>KS</th><th>PSI</th></tr>
+                                </thead>
+                                <tbody>
+                                    <tr><td>W76-79</td><td>~1,210</td><td class="highlight-cell">0.810</td><td>0.505</td><td>—</td></tr>
+                                    <tr><td>W80-83</td><td>~1,210</td><td>0.795</td><td>0.488</td><td>0.035</td></tr>
+                                    <tr><td>W84-87</td><td>~1,210</td><td>0.788</td><td>0.472</td><td>0.048</td></tr>
+                                    <tr class="best-row"><td><strong>W88-91</strong></td><td><strong>~1,210</strong></td><td><strong>0.802</strong></td><td><strong>0.497</strong></td><td><strong>0.052</strong></td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="alert alert-warning mt-1">
+                            <strong>白户结论：</strong>受样本量小（每窗口仅 ~1,210）影响，AUC/KS 波动大于非白户。PSI 均在安全范围内（< 0.25），但需持续监控——样本量不足是白户模型稳定性的主要瓶颈。
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PSI/KS 监控阈值 -->
+                <div class="card mt-2">
+                    <h4>线上监控阈值建议</h4>
+                    <div class="table-wrapper">
+                        <table class="data-table">
+                            <thead>
+                                <tr><th>指标</th><th>绿色（正常）</th><th>黄色（预警）</th><th>红色（告警）</th><th>监控频率</th></tr>
+                            </thead>
+                            <tbody>
+                                <tr><td><strong>PSI</strong></td><td>&lt; 0.10</td><td>0.10 ~ 0.25</td><td>&gt; 0.25</td><td>每 4 周</td></tr>
+                                <tr><td><strong>KS</strong></td><td>波动 &lt; 0.03</td><td>波动 0.03 ~ 0.05</td><td>波动 &gt; 0.05</td><td>每 4 周</td></tr>
+                                <tr><td><strong>AUC</strong></td><td>波动 &lt; 0.02</td><td>波动 0.02 ~ 0.05</td><td>波动 &gt; 0.05</td><td>每 4 周</td></tr>
+                                <tr><td><strong>通过率</strong></td><td>波动 &lt; 2%</td><td>波动 2% ~ 5%</td><td>波动 &gt; 5%</td><td>每周</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -832,36 +753,52 @@
         <section id="insights" class="section section-alt">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">10</span>
+                    <span class="section-num">09</span>
                     <h2>业务洞察与建议</h2>
                     <p class="section-subtitle">Business Insights</p>
                 </div>
 
                 <div class="card">
-                    <h3>核心风险因子</h3>
-                    <ul class="check-list">
-                        <li><strong>历史逾期行为（DPD）</strong>是最强违约预测因子，maxdpdlast12m_727P、actualdpdtolerance_344P 等字段 IV 最高</li>
-                        <li><strong>多头借贷信号</strong>（applications30d_658L、numrejects9m_859L）高值区间违约率显著上升</li>
-                        <li><strong>负债水平</strong>（currdebt_22A、totaldebt_9A）与收入不匹配是重要风险来源</li>
-                        <li><strong>征信查询频次</strong>（days30_165L、days90_310L）反映资金饥渴程度</li>
-                    </ul>
+                    <h3>核心风险因子（分群视角）</h3>
+                    <div class="content-grid two-col mt-1">
+                        <div>
+                            <h4><svg class="ico-nw" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户（94.94%客户）</h4>
+                            <ul class="check-list">
+                                <li><strong>征信局逾期行为</strong> — bureau_a_overdue_ratio (IV=0.349) 是最强预测因子</li>
+                                <li><strong>多头借贷/拒贷信号</strong> — 多机构拒贷 = 其他风控模型已识别风险</li>
+                                <li><strong>逾期恶化趋势</strong> — 近期逾期比远期逾期更危险</li>
+                                <li><strong>申请行为异常</strong> — 频繁短期申请 = 资金饥渴</li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h4><svg class="ico-wh" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户（5.06%客户）</h4>
+                            <ul class="check-list">
+                                <li><strong>年龄</strong> — 年轻白户（<30岁）风险显著更高（IV=0.209）</li>
+                                <li><strong>收入/行业类型</strong> — 通过类别编码映射群体违约率</li>
+                                <li><strong>区域信用画像</strong> — 联系地址区域违约率 = "地域信用评分"</li>
+                                <li><strong>税务记录</strong> — 正规就业/收入水平的代理变量</li>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="card mt-2">
-                    <h3>客户分层建议</h3>
-                    <p class="mb-1">基于模型预测概率，可将客户分为四层：</p>
-                    <div class="table-wrapper">
-                        <table class="data-table">
-                            <thead>
-                                <tr><th>层级</th><th>违约概率</th><th>策略建议</th></tr>
-                            </thead>
-                            <tbody>
-                                <tr><td>优质客户</td><td>&lt; 1%</td><td>简化审批流程，提供利率优惠，促进复购</td></tr>
-                                <tr><td>正常客户</td><td>1%~3%</td><td>标准审批流程，正常定价</td></tr>
-                                <tr><td>关注客户</td><td>3%~10%</td><td>加强收入验证，要求担保或提高首付比</td></tr>
-                                <tr><td>高危客户</td><td>&gt; 10%</td><td>建议拒贷或大幅降低授信额度</td></tr>
-                            </tbody>
-                        </table>
+                    <h3>评分应用建议</h3>
+                    <div class="content-grid two-col mt-1">
+                        <div class="card">
+                            <h4><svg class="ico-nw" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="7" fill="#3182ce"/><path d="M5 8l2 2 4-4" stroke="#fff" stroke-width="1.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>非白户</h4>
+                            <ol class="check-list">
+                                <li>低于准入阈值（755 分）的客户<strong>直接拒绝</strong></li>
+                                <li>结合<strong>收入水平和负债水平</strong>，评分高低予以差异化<strong>授信额度</strong>和<strong>贷款利率</strong></li>
+                            </ol>
+                        </div>
+                        <div class="card">
+                            <h4><svg class="ico-wh" width="14" height="14" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.5" fill="none" stroke="#ed8936" stroke-width="1.5"/></svg>白户</h4>
+                            <ol class="check-list">
+                                <li>低于准入阈值（718 分）的客户<strong>直接拒绝</strong>（通过率仅 ~64.9%）</li>
+                                <li>对准入客户予以<strong>小额度、中等定价</strong>，累积风险表现数据后再<strong>调额调价</strong></li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
 
@@ -871,29 +808,29 @@
                         <div class="roadmap-item">
                             <div class="roadmap-dot"></div>
                             <div class="roadmap-content">
-                                <h4>深度学习融合</h4>
-                                <p>尝试 TabNet、DeepFM 等深度学习模型与传统树模型融合</p>
+                                <h4>额度与利率模型搭建</h4>
+                                <p>由于数据集收入数据缺失严重（maininc_215A 缺失率 33.5%，填充后仍有 25.7% 空缺），且税务、物理特征等其他变量拟合收入效果极差（R² 仅 0.17），暂无法搭建额度模型。后续需引入更可靠的收入数据源（如银行流水、社保基数）方可推进。</p>
                             </div>
                         </div>
                         <div class="roadmap-item">
                             <div class="roadmap-dot"></div>
                             <div class="roadmap-content">
-                                <h4>全链路评分卡体系</h4>
-                                <p>构建申请评分卡（A卡）+ 行为评分卡（B卡）+ 催收评分卡（C卡）</p>
+                                <h4>替代数据引入（白户突破关键）</h4>
+                                <p>运营商数据（通话/充值行为）、社保缴纳记录、电商消费数据——白户 AUC 有望从 0.79 突破至 0.82+</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-dot"></div>
+                            <div class="roadmap-content">
+                                <h4>深度学习融合</h4>
+                                <p>尝试 TabNet、DeepFM 等深度学习模型与传统树模型融合，特别是白户场景下对非线性交互的捕捉</p>
                             </div>
                         </div>
                         <div class="roadmap-item">
                             <div class="roadmap-dot"></div>
                             <div class="roadmap-content">
                                 <h4>线上监控看板</h4>
-                                <p>建立线上模型监控看板，实时追踪 AUC、PSI、特征漂移</p>
-                            </div>
-                        </div>
-                        <div class="roadmap-item">
-                            <div class="roadmap-dot"></div>
-                            <div class="roadmap-content">
-                                <h4>GNN 反欺诈</h4>
-                                <p>探索图神经网络在 clientscnt 关联网络中的反欺诈应用</p>
+                                <p>建立双模型线上监控看板，分群实时追踪 AUC、PSI、特征漂移、通过率变化</p>
                             </div>
                         </div>
                     </div>
@@ -905,7 +842,7 @@
         <section id="appendix" class="section">
             <div class="container">
                 <div class="section-header">
-                    <span class="section-num">11</span>
+                    <span class="section-num">10</span>
                     <h2>附录</h2>
                     <p class="section-subtitle">Appendix</p>
                 </div>
